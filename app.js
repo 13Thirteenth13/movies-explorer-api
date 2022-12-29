@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import winston from 'winston';
 import winstonExpress from 'express-winston';
 import { errors, isCelebrateError } from 'celebrate';
@@ -62,14 +64,20 @@ export const run = async (envName) => {
 
   const app = express();
   app.set('config', config);
-  app.use(requestLogger);
   app.use(bodyParser.json());
+  app.use(requestLogger);
+  app.use(helmet());
   app.use(cors(
     {
       origin: config.IS_PROD ? allowedOrigins : '*',
       allowedHeaders: ['Content-Type', 'Authorization'],
     },
   ));
+
+  app.use(rateLimit({
+    message: { message: 'Слишком много запросов' },
+    max: 100,
+  }));
 
   app.get('/crash-test', () => {
     setTimeout(() => {
