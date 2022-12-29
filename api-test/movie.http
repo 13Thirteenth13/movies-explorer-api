@@ -1,0 +1,33 @@
+//create movie
+POST http://localhost:5000/movies
+Content-Type: application/json
+Authorization:
+
+{
+    "movieId": 1,
+    "country": "country",
+    "director": "director",
+    "duration": 60,
+    "year": "2023",
+    "description": "description",
+    "image": "https://image.ru",
+    "trailerLink": "https://trailerLink.ru",
+    "thumbnail": "https://thumbnail.ru",
+    "nameRU": "nameRU",
+    "nameEN": "nameEN"
+}
+
+###
+//get movies
+GET http://localhost:5000/movies
+Content-Type: application/json
+Authorization:
+
+###
+//delete movie
+DELETE http://localhost:5000/movies/63ada9adb49e7b4a61369701
+//id
+Content-Type: application/json
+Authorization:
+
+###

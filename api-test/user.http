@@ -1,0 +1,16 @@
+GET http://localhost:5000/users/me
+Content-Type: application/json
+Authorization:
+
+###
+
+PATCH http://localhost:5000/users/me
+Content-Type: application/json
+Authorization:
+
+{
+    "email": "user@test.com",
+    "name": "user"
+}
+
+###
