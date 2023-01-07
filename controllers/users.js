@@ -8,12 +8,14 @@ import {
   ConflictError,
   NotFoundError,
   ServerError,
+  errorMessages,
 } from '../errors/index.js';
 
-const errorServer = new ServerError('Произошла ошибка на сервере');
-const notFoundError = new NotFoundError('Пользователь не найден');
-const errorNotUnique = new ConflictError('Пользователь с такой почтой уже существует');
-const errorBadRequest = new BadRequestError('Некорректные данные для пользователя');
+const errorServer = new ServerError(errorMessages.errorServer);
+const notFoundError = new NotFoundError(errorMessages.userNotFound);
+const errorNotUnique = new ConflictError(errorMessages.userNotUnique);
+const conflictError = new ConflictError(errorMessages.userConflictError);
+const errorBadRequest = new BadRequestError(errorMessages.userBadRequest);
 
 export const getMe = (req, res, next) => {
   const { _id } = req.user;
@@ -36,18 +38,6 @@ export const getMe = (req, res, next) => {
     });
 };
 
-export const getUsers = (req, res, next) => {
-  User.find({})
-    .then((users) => res.send(users))
-    .catch((err) => {
-      if (err instanceof HTTPError) {
-        next(err);
-      } else {
-        next(errorServer);
-      }
-    });
-};
-
 export const createUser = (req, res, next) => {
   const {
     name,
@@ -61,9 +51,13 @@ export const createUser = (req, res, next) => {
     password: hash,
   });
 
+  const findOne = (hash) => User.findOne({ email })
+    .then((user) => ({ user, hash }));
+
   bcrypt
     .hash(password, 10)
-    .then((hash) => createUserHash(hash))
+    .then(findOne)
+    .then(({ hash }) => createUserHash(hash))
     .then((user) => {
       const { _id } = user;
       res.send({
@@ -88,12 +82,20 @@ export const createUser = (req, res, next) => {
 export const updateProfile = (req, res, next) => {
   const { name, email } = req.body;
 
-  User.findByIdAndUpdate(req.user._id, { name, email }, { runValidators: true })
-    .then((user) => res.send({
-      _id: user._id,
-      name,
-      email,
-    }))
+  const findByIdAndUpdate = () => User.findByIdAndUpdate(
+    req.user._id,
+    { name, email },
+    { runValidators: true, new: true },
+  );
+
+  User.find({ email })
+    .then(([user]) => {
+      if (user && user._id.toString() !== req.user._id) {
+        throw conflictError;
+      }
+      return findByIdAndUpdate();
+    })
+    .then((updatedUser) => res.send(updatedUser))
     .catch((err) => {
       if (err instanceof HTTPError) {
         next(err);
@@ -111,7 +113,7 @@ export const login = (req, res, next) => {
     .then((user) => {
       const { JWT_SECRET } = req.app.get('config');
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
-        expiresIn: '1d',
+        expiresIn: '7d',
       });
       res.send({ token });
     })

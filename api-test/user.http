@@ -1,16 +1,16 @@
 GET http://localhost:5000/users/me
 Content-Type: application/json
-Authorization:
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2I5NGI4MTgyZDc3Zjk0MTA1ZjAzZTgiLCJpYXQiOjE2NzMwODc4NzgsImV4cCI6MTY3MzY5MjY3OH0.1V6ecXmDDm8OfDSFgphRaJy0bMX1loEkRAkL2ixkP7I
 
 ###
 
 PATCH http://localhost:5000/users/me
 Content-Type: application/json
-Authorization:
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2I5NGI4MTgyZDc3Zjk0MTA1ZjAzZTgiLCJpYXQiOjE2NzMwODc4NzgsImV4cCI6MTY3MzY5MjY3OH0.1V6ecXmDDm8OfDSFgphRaJy0bMX1loEkRAkL2ixkP7I
 
 {
-    "email": "user@test.com",
-    "name": "user"
+    "email": "user@test.ru",
+    "name": "user1"
 }
 
 ###

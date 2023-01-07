@@ -1,30 +1,26 @@
 import { celebrate, Joi } from 'celebrate';
 import isUrl from 'validator/lib/isURL.js';
+import { errorMessages } from '../errors/index.js';
 
-const validationURL = (message) => (value, helpers) => {
-  if (isUrl(value)) return value;
-  return helpers.message(message);
-};
+const validationLink = Joi.string()
+  .uri()
+  .required()
+  .custom((value, helpers) => {
+    if (isUrl(value)) return value;
+    return helpers.message(errorMessages.link);
+  });
 
 export const validationPostMovie = celebrate({
   body: Joi.object().keys({
-    movieId: Joi.number().integer().required(),
+    movieId: Joi.number().required(),
     country: Joi.string().required(),
     director: Joi.string().required(),
     duration: Joi.number().required(),
     year: Joi.string().required(),
     description: Joi.string().required(),
-    image: Joi.string()
-      .uri()
-      .required()
-      .custom(validationURL('Некорректный формат ссылки для изображения')),
-    trailerLink: Joi.string()
-      .required()
-      .custom(validationURL('Некорректный формат ссылки для постера')),
-    thumbnail: Joi.string()
-      .uri()
-      .required()
-      .custom(validationURL('Некорректный формат ссылки для трейлера')),
+    image: validationLink,
+    trailerLink: validationLink,
+    thumbnail: validationLink,
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
   }),

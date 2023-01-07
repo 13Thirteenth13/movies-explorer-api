@@ -8,16 +8,12 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import winston from 'winston';
 import winstonExpress from 'express-winston';
-import { errors, isCelebrateError } from 'celebrate';
-import { constants } from 'http2';
+import { errors } from 'celebrate';
 import { fileURLToPath } from 'url';
 
-import { router as userRouter } from './routes/users.js';
-import { router as movieRouter } from './routes/movies.js';
-import { router as authRouter } from './routes/auth.js';
-
-import { HTTPError, NotFoundError } from './errors/index.js';
-import { auth } from './middlewares/auth.js';
+import { router } from './routes/index.js';
+import { errorMessages } from './errors/index.js';
+import { error as errorMiddleware } from './middlewares/error.js';
 
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -40,7 +36,7 @@ export const run = async (envName) => {
     path: path.resolve(__dirname, (isProduction ? '.env' : '.env.common')),
   }).parsed;
   if (!config) {
-    throw new Error('Config не найден');
+    throw new Error(errorMessages.configNotFound);
   }
   config.NODE_ENV = envName;
   config.IS_PROD = isProduction;
@@ -63,52 +59,24 @@ export const run = async (envName) => {
   });
 
   const app = express();
-  app.set('config', config);
-  app.use(bodyParser.json());
-  app.use(requestLogger);
-  app.use(helmet());
+  app.use(rateLimit({
+    message: { message: errorMessages.rateLimit },
+    max: 100,
+  }));
   app.use(cors(
     {
       origin: config.IS_PROD ? allowedOrigins : '*',
       allowedHeaders: ['Content-Type', 'Authorization'],
     },
   ));
-
-  app.use(rateLimit({
-    message: { message: 'Слишком много запросов' },
-    max: 100,
-  }));
-
-  app.get('/crash-test', () => {
-    setTimeout(() => {
-      throw new Error('Сервер сейчас упадёт');
-    }, 0);
-  });
-  app.use('/', authRouter);
-  app.use(auth);
-  app.use('/users', userRouter);
-  app.use('/movies', movieRouter);
-  app.use(errors());
-  app.all('/*', (req, res, next) => {
-    next(new NotFoundError('Запрашиваемая страница не найдена'));
-  });
+  app.set('config', config);
+  app.use(bodyParser.json());
+  app.use(requestLogger);
+  app.use(helmet());
+  app.use(router);
   app.use(errorLogger);
-  app.use((err, req, res, next) => {
-    const isHttpError = err instanceof HTTPError;
-    const isValidatorError = isCelebrateError(err);
-
-    if (isHttpError) {
-      res.status(err.statusCode).send({
-        message: err.message,
-      });
-    }
-    if (!(isHttpError || isValidatorError)) {
-      res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({
-        message: err.message || 'Произошла ошибка на сервере',
-      });
-    }
-    next();
-  });
+  app.use(errors());
+  app.use(errorMiddleware);
 
   mongoose.set('runValidators', true);
   await mongoose.connect(config.DATABASE_URL, {

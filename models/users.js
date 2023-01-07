@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import isEmail from 'validator/lib/isEmail.js';
-import { UnauthorizedError } from '../errors/index.js';
+import { UnauthorizedError, errorMessages } from '../errors/index.js';
 
 const { Schema } = mongoose;
 
@@ -20,7 +20,7 @@ const schema = new Schema(
       dropDups: true,
       validate: {
         validator: (link) => isEmail(link),
-        message: 'Некорректный формат почты',
+        message: errorMessages.incorrectEmail,
       },
     },
     password: {
@@ -37,11 +37,11 @@ schema.statics.findUserByCredentials = function findUserByCredentials(email, pas
     .select('+password')
     .then((user) => {
       if (!user) {
-        throw new UnauthorizedError('Неправильные почта или пароль');
+        throw new UnauthorizedError(errorMessages.incorrectData);
       }
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
-          throw new UnauthorizedError('Неправильные почта или пароль');
+          throw new UnauthorizedError(errorMessages.incorrectData);
         }
         return user;
       });

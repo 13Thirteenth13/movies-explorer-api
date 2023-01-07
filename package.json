@@ -8,8 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
     "dev": "cross-env NODE_ENV=development nodemon ./bin/index.js",
-    "start": "cross-env NODE_ENV=production node ./bin/index.js",
-    "start pm-2": "sudo NODE_ENV=production pm-2 start ./bin/index.js"
+    "start": "cross-env NODE_ENV=production node ./bin/index.js"
   },
   "repository": {
     "type": "git",

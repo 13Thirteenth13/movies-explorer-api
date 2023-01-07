@@ -5,15 +5,16 @@ import {
   NotFoundError,
   ServerError,
   ForbiddenError,
+  errorMessages,
 } from '../errors/index.js';
 
-const errorServer = new ServerError('Произошла ошибка на сервере');
-const notFoundError = new NotFoundError('Фильм не найден');
-const forbiddenError = new ForbiddenError('Это действие можно выполнить только со своими фильмами');
-const errorBadRequest = new BadRequestError('Некорректные данные');
+const errorServer = new ServerError(errorMessages.errorServer);
+const notFoundError = new NotFoundError(errorMessages.movieNotFound);
+const forbiddenError = new ForbiddenError(errorMessages.movieForbiddenError);
+const errorBadRequest = new BadRequestError(errorMessages.movieBadRequest);
 
 export const getMovies = (req, res, next) => {
-  Movie.find({})
+  Movie.find({ owner: req.user._id })
     .then((movies) => res.send(movies))
     .catch((err) => {
       if (err instanceof HTTPError) {
@@ -25,35 +26,9 @@ export const getMovies = (req, res, next) => {
 };
 
 export const createMovie = (req, res, next) => {
-  const {
-    movieId,
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailerLink,
-    thumbnail,
-    nameRU,
-    nameEN,
-  } = req.body;
-  const owner = req.user._id;
-  Movie.create({
-    movieId,
-    country,
-    director,
-    duration,
-    year,
-    description,
-    owner,
-    image,
-    trailerLink,
-    thumbnail,
-    nameRU,
-    nameEN,
-  })
-    .then((movie) => res.send(movie))
+  req.body.owner = req.user._id;
+  Movie.create(req.body)
+    .then((Newmovie) => res.send(Newmovie))
     .catch((err) => {
       if (err instanceof HTTPError) {
         next(err);

@@ -1,10 +1,10 @@
 //create movie
 POST http://localhost:5000/movies
 Content-Type: application/json
-Authorization:
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2I4ODk1MzgwNDRmNGFlNDc2ZTI1NGEiLCJpYXQiOjE2NzMwMzgxNzEsImV4cCI6MTY3MzEyNDU3MX0.v1pwj9ldEP6CXYkoUApwBvPfCmrmEUX81QOTdcCtdrI
 
 {
-    "movieId": 1,
+    "movieId": 3,
     "country": "country",
     "director": "director",
     "duration": 60,
@@ -21,13 +21,13 @@ Authorization:
 //get movies
 GET http://localhost:5000/movies
 Content-Type: application/json
-Authorization:
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2I4ODk1MzgwNDRmNGFlNDc2ZTI1NGEiLCJpYXQiOjE2NzMwMzgxNzEsImV4cCI6MTY3MzEyNDU3MX0.v1pwj9ldEP6CXYkoUApwBvPfCmrmEUX81QOTdcCtdrI
 
 ###
 //delete movie
-DELETE http://localhost:5000/movies/63ada9adb49e7b4a61369701
+DELETE http://localhost:5000/movies/63b4321c471b0f59a8ab3230
 //id
 Content-Type: application/json
-Authorization:
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2I0MzBiOWU5ODZmNWUzNmNkNDZhNTUiLCJpYXQiOjE2NzI3NTMzNTUsImV4cCI6MTY3MjgzOTc1NX0.tgEc8xehKx_5DW5QnGkbC7s01YT1RRsGA3ocEnSDb5k
 
 ###
