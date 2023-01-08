@@ -1,0 +1,33 @@
+//create movie
+POST http://localhost:5000/movies
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2I4ODk1MzgwNDRmNGFlNDc2ZTI1NGEiLCJpYXQiOjE2NzMwMzgxNzEsImV4cCI6MTY3MzEyNDU3MX0.v1pwj9ldEP6CXYkoUApwBvPfCmrmEUX81QOTdcCtdrI
+
+{
+    "movieId": 3,
+    "country": "country",
+    "director": "director",
+    "duration": 60,
+    "year": "2023",
+    "description": "description",
+    "image": "https://image.ru",
+    "trailerLink": "https://trailerLink.ru",
+    "thumbnail": "https://thumbnail.ru",
+    "nameRU": "nameRU",
+    "nameEN": "nameEN"
+}
+
+###
+//get movies
+GET http://localhost:5000/movies
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2I4ODk1MzgwNDRmNGFlNDc2ZTI1NGEiLCJpYXQiOjE2NzMwMzgxNzEsImV4cCI6MTY3MzEyNDU3MX0.v1pwj9ldEP6CXYkoUApwBvPfCmrmEUX81QOTdcCtdrI
+
+###
+//delete movie
+DELETE http://localhost:5000/movies/63b4321c471b0f59a8ab3230
+//id
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2I0MzBiOWU5ODZmNWUzNmNkNDZhNTUiLCJpYXQiOjE2NzI3NTMzNTUsImV4cCI6MTY3MjgzOTc1NX0.tgEc8xehKx_5DW5QnGkbC7s01YT1RRsGA3ocEnSDb5k
+
+###

@@ -1,0 +1,21 @@
+//signin
+POST http://localhost:5000/signin
+Content-Type: application/json
+
+{
+    "email":"user1@test.ru",
+    "password":"qwertyqwerty"
+}
+
+###
+//signup
+POST http://localhost:5000/signup
+Content-Type: application/json
+
+{
+    "name":"user1",
+    "email":"user1@test.ru",
+    "password":"qwertyqwerty"
+}
+
+###
